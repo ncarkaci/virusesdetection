@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class CrossValidation {
 	private int size_of_input, num_of_sets;
-	private String OUTPUT_PATH = "C:/Users/Annie/Desktop/School Work/Reverse Engineering/Input Data/";
 	private String folder_name; //folder where the input data are
 	private String filename;
 
@@ -17,7 +16,7 @@ public class CrossValidation {
 		filename = fname;
 	}
 
-	public void doCrossValidation(ReadInstructions read_data) {
+	public void doCrossValidation(ReadInstructions read_data, int index) {
 		// Make sure to create a folder to store these input files for HMM
 		if (!makeDir()){
 			System.err.println("Error! Cannot make dir!");
@@ -35,7 +34,7 @@ public class CrossValidation {
 		for (i = 0; i < size_per_set; i++) {
 			try { //System.out.println(i);
 				input_asm_files = read_data.readAssemblyFile(data_files.get(i));
-				createInputFiles(read_data, input_asm_files, i);
+				createInputFiles(read_data, input_asm_files, i, index);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}	
@@ -50,16 +49,16 @@ public class CrossValidation {
 				e.printStackTrace();
 			}
 		} //System.out.println(i);
-		createInputFiles(read_data, input_asm_files, i); //this is the training set which is the combination of the remaining files
+		createInputFiles(read_data, input_asm_files, i, index); //this is the training set which is the combination of the remaining files
 	}
 
 	/**
 	 * 
-	 * @param read_data
+	 * @param read_data the opcodes structure will be stored here
 	 * @param current_file the current assembly file to be convert to alphabet and in files
 	 * @param i the index to identify training or testing file (0 - 39: testing, 40 is training)
 	 */
-	private void createInputFiles(ReadInstructions read_data, ArrayList<String> current_file, int i) {
+	private void createInputFiles(ReadInstructions read_data, ArrayList<String> current_file, int i, int index) {
 		// This contains the processed assembly codes from data files
 		ArrayList<String> asm_data = new ArrayList<String>();	
 		// This contains all the unique symbols for the alphabet file
@@ -71,12 +70,12 @@ public class CrossValidation {
 		asm_data.addAll(current_file); 
 		//get all the unique symbols
 		alphabet_data = read_data.getAlphabet(asm_data);
-		// write the alphabet file
-		read_data.writeAlphabets(alphabet_data, OUTPUT_PATH + "/" + filename + "/IDAN" + i + ".asm");
+		// write the alphabet file to the location indicated
+		read_data.writeAlphabets(alphabet_data, Constants.OUTPUT_PATH + "/" + filename + "/IDAN" + index + "_" + i);
 		// get the index of all opcodes
 		index_data = read_data.getInputFile(asm_data, alphabet_data);
-		// write the index into the .in file
-		read_data.writeInputFile(index_data, OUTPUT_PATH + "/" + filename + "/IDAN" + i + ".asm");	
+		// write the index into the .in file to the location indicated
+		read_data.writeInputFile(index_data, Constants.OUTPUT_PATH + "/" + filename + "/IDAN" + index + "_" + i);	
 	}
 
 	private ArrayList<String> generateDataFiles() {
@@ -96,7 +95,7 @@ public class CrossValidation {
 
 	private boolean makeDir() {
 		//check to see if the dir exist, if not create it
-		File folder = new File(OUTPUT_PATH + filename);
+		File folder = new File(Constants.OUTPUT_PATH + filename);
 		boolean done = true;
 		if (!folder.exists()) {
 			done = folder.mkdir();
