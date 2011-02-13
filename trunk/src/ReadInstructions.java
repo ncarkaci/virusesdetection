@@ -172,9 +172,9 @@ public class ReadInstructions {
 	 */
 	public void writeAlphabets(ArrayList<String> alphabet, String name) {
 		FileWriter file;
-		String[] fname = name.split("\\."); 
+
 		try {
-			file = new FileWriter(fname[0] + ".alphabet"); 
+			file = new FileWriter(name + ".alphabet");
 			// write it to file
 			file.write(alphabet.size() + "\r\n");
 			for (String a: alphabet) {
@@ -229,10 +229,9 @@ public class ReadInstructions {
 	 */
 	public void writeInputFile(ArrayList<Integer> index, String name) {
 		FileWriter file;
-		String[] fname = name.split("\\.");
 		
 		try {
-			file = new FileWriter(fname[0] + ".in");
+			file = new FileWriter(name + ".in");
 			file.write(index.size() + "\r\n");
 			for (Integer i: index) {
 				file.write(i + "\r\n");
