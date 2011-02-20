@@ -7,6 +7,6 @@ public interface Constants {
 	// The location for the HMM.exe
 	public static final String HMM_EXE = "C:/Users/Annie/Desktop/School Work/Reverse Engineering/Input Data/DataSetOut0s0/hmm_modified.exe";
 	// The max percentage of subroutine and junk code for the metamorphic worm
-	public static final int PERCENT = 0;
+	public static final int PERCENT = 40;
 	
 }

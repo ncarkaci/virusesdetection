@@ -7,17 +7,10 @@ public class CmdExec {
 			String in_file, String alphabet_file, String model_file, 
 			int seed, int indicator) {
 
-
 		try {
 			String arguments = N + " " + M + " " + T + " " + 
-			max_iters + " \"" + in_file + "\" \"" + alphabet_file + "\" \"" +
-			model_file + "\" " + seed + " " + indicator;	
-			
-			StringBuffer ss = new StringBuffer();
-			ss.append(" "); ss.append(N);ss.append(" ");ss.append(M);ss.append(" ");ss.append(T);ss.append(" ");
-			ss.append(max_iters); ss.append(" "); ss.append(in_file); ss.append(" "); ss.append(alphabet_file);
-			ss.append(" ");ss.append(model_file);ss.append(" ");ss.append(seed);ss.append(" ");ss.append(indicator);
-			ss.toString();
+				max_iters + " \"" + in_file + "\" \"" + alphabet_file + "\" \"" +
+				model_file + "\" " + seed + " " + indicator;	
 
 			String cmd_arguments = Constants.HMM_EXE + " " + arguments;
 			Runtime rr = Runtime.getRuntime();
@@ -30,8 +23,6 @@ public class CmdExec {
 			}
 			int exitVal = pp.waitFor();
 			System.out.println("Process exitValue: " + exitVal);
-
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
@@ -51,7 +42,7 @@ public class CmdExec {
 		// perform the HMM from 2 hidden states to 6 hidden states
 		for (N = 2; N <= 2; N++) {
 			for (int cv = 0; cv < 1; cv++) {
-				current_file =  "IDAN" + cv + "_" + (int)train;
+				current_file =  "IDAN" + cv + "_" + (int)train; //training file is only the file with index 40
 				in_file = Constants.OUTPUT_PATH + folder + current_file + ".in";
 				// T will be read from the .in file
 				temp = readFirstLine(in_file);
@@ -90,6 +81,9 @@ public class CmdExec {
 		return line;
 	}
 	
+	/*
+	 * Open all the folders to train the files.
+	 */
 	private static void trainAllFolders() {
 		String folder;
 		for (int i = 0; i <= Constants.PERCENT; i++) {
@@ -102,8 +96,12 @@ public class CmdExec {
 		}
 	}
 	
+	public static void testAllFolders() {
+		
+	}
+	
 	public static void main(String[] args) {		
-		trainAllFolders();
+		//trainAllFolders();
 
 		
 
