@@ -19,7 +19,7 @@ public class Main {
 		}
 	*/	 
 		int size_of_input = 198; //Integer.parseInt(args[1]);
-		int cross_validation = 5; //Integer.parseInt(args[2]);
+		int cross_validation_folds = 5; //Integer.parseInt(args[2]);
 		
 		int file_percent, subpercent; 
 		String name, folder_name;
@@ -34,11 +34,11 @@ public class Main {
 				folder_name = Constants.PATH_NAME + name; // full path name to the file
 				System.out.format("%s%n", folder_name);			
 
-				CrossValidation validation = new CrossValidation(size_of_input, cross_validation, folder_name, name);
+				CrossValidation validation = new CrossValidation(size_of_input, cross_validation_folds, folder_name, name);
 				// perform 5-fold validation
-				for (int index = 0; index < cross_validation; index++) {
+				for (int fold_index = 0; fold_index < cross_validation_folds; fold_index++) {
 					
-					validation.doCrossValidation(read_data, index);
+					validation.doCrossValidation(read_data, fold_index);
 				}
 				
 			}

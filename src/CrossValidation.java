@@ -5,18 +5,19 @@ import java.util.Random;
 
 
 public class CrossValidation {
-	private int size_of_input, num_of_sets;
-	private String folder_name; //folder where the input data are
+	private int size_of_input;
+	private int num_folds; // Number of cross-validation folds (how many splits are there)
+	private String folder_name; // Folder where the input data are located
 	private String filename;
 
 	public CrossValidation(int input, int sets, String name, String fname) {
 		size_of_input = input;
-		num_of_sets = sets;
+		num_folds = sets;
 		folder_name = name;
 		filename = fname;
 	}
 
-	public void doCrossValidation(ReadInstructions read_data, int index) {
+	public void doCrossValidation(ReadInstructions read_data, int fold_index) {
 		// Make sure to create a folder to store these input files for HMM
 		if (!makeDir()){
 			System.err.println("Error! Cannot make dir!");
@@ -26,21 +27,11 @@ public class CrossValidation {
 		// Contains all the input assembly files
 		ArrayList<String> data_files = generateDataFiles();
 		// Contain the asm file(s) to create alphabet and in file
-		ArrayList<String> input_asm_files = new ArrayList<String>();
-		int size_per_set = 200/num_of_sets; //size_of_input / num_of_sets; 
-		int i;
+		int size_per_set = 200/num_folds; //size_of_input / num_folds;
 		
-		// The first set is always used for the testing, so it will be 1 file
-		for (i = 0; i < size_per_set; i++) {
-			try { //System.out.println(i);
-				input_asm_files = read_data.readAssemblyFile(data_files.get(i));
-				createInputFiles(read_data, input_asm_files, i, index);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
-		}
-		//System.out.println("end " + size_of_input);
-		input_asm_files = new ArrayList<String>();
+		// First, create the training set [size_per_set...size_of_input-1], then extract the 
+		// alphabet from it. The alphabet is shared by the entire fold (fold_index).
+		ArrayList<String> input_asm_files = new ArrayList<String>();
 		// Training file will be using the remaining file
 		for (int j = size_per_set; j < size_of_input; j++) {
 			try { //System.out.println(j);
@@ -49,33 +40,45 @@ public class CrossValidation {
 				e.printStackTrace();
 			}
 		} //System.out.println(i);
-		createInputFiles(read_data, input_asm_files, i, index); //this is the training set which is the combination of the remaining files
+		
+		// This contains all the unique symbols for the alphabet file in the training.
+		ArrayList<String> alphabet_data = read_data.getAlphabet(input_asm_files);
+		// Write the alphabet file to the location indicated. ALWAYS use this alphabet.
+		read_data.writeAlphabets(alphabet_data, Constants.OUTPUT_PATH + "/" + filename + "/IDAN" + fold_index + "_" + size_per_set);
+		// Create the training .in file.
+		createInputFiles(read_data, alphabet_data, input_asm_files, size_per_set, fold_index); 
+		
+		// The testing set is [0...size_per_set-1] and for each input, output a .in file
+		// which shares the alphabet with training.
+		for (int i = 0; i < size_per_set; i++) {
+			try { //System.out.println(i);
+				ArrayList<String> current_file = read_data.readAssemblyFile(data_files.get(i));
+				createInputFiles(read_data, alphabet_data, current_file, i, fold_index);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	
+		}
+		//System.out.println("end " + size_of_input);
 	}
 
 	/**
 	 * 
 	 * @param read_data the opcodes structure will be stored here
 	 * @param current_file the current assembly file to be convert to alphabet and in files
-	 * @param i the index to identify training or testing file (0 - 39: testing, 40 is training)
+	 * @param file_index the index to identify training or testing file (0 - 39: testing, 40 is training)
+	 * @param fold_index the current cross-validation fold
 	 */
-	private void createInputFiles(ReadInstructions read_data, ArrayList<String> current_file, int i, int index) {
+	private void createInputFiles(ReadInstructions read_data, ArrayList<String> alphabet_data, ArrayList<String> current_file, int file_index, int fold_index) {
 		// This contains the processed assembly codes from data files
 		ArrayList<String> asm_data = new ArrayList<String>();	
-		// This contains all the unique symbols for the alphabet file
-		ArrayList<String> alphabet_data = new ArrayList<String>();
-		// This contains all the index for the opcodes
-		ArrayList<Integer> index_data = new ArrayList<Integer>();
-
 		//this is the training file (.in file)
 		asm_data.addAll(current_file); 
-		//get all the unique symbols
-		alphabet_data = read_data.getAlphabet(asm_data);
-		// write the alphabet file to the location indicated
-		read_data.writeAlphabets(alphabet_data, Constants.OUTPUT_PATH + "/" + filename + "/IDAN" + index + "_" + i);
+		
+		// This contains all the index for the opcodes
 		// get the index of all opcodes
-		index_data = read_data.getInputFile(asm_data, alphabet_data);
+		ArrayList<Integer> index_data = read_data.getInputFile(asm_data, alphabet_data);
 		// write the index into the .in file to the location indicated
-		read_data.writeInputFile(index_data, Constants.OUTPUT_PATH + "/" + filename + "/IDAN" + index + "_" + i);	
+		read_data.writeInputFile(index_data, Constants.OUTPUT_PATH + "/" + filename + "/IDAN" + fold_index + "_" + file_index);	
 	}
 
 	private ArrayList<String> generateDataFiles() {
