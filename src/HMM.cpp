@@ -307,7 +307,7 @@ int main(int argc, const char *argv[])
 		fflush(stdout);
 		alphaPass(step, pi, A, B, N, T);
 		printf("done\n");
-		
+		printf("logProb %f\n", computeLogProb(step, T)/T);
 		
 	//	FILE * newFile = fopen("testing.txt", "a");
 		//writeModel(pi, A, B, N, M, T, alphabet, newFile);
@@ -335,8 +335,8 @@ void readModelFile(double *pi,
 	if (filename != NULL) 
 	{	
 		fscanf(filename, "N=%d, M=%d, T=%d\n", &N1, &M1, &T1);
-		if (N1 != N || M1 != M || T != T1) {
-			fprintf(stderr, "\nN, M, or T is not the same parameters!\n\n");
+		if (N1 != N || M1 != M) {
+			fprintf(stderr, "\nN, or M is not the same parameters!\n\n");
 			exit(0);
 		}
 
@@ -476,9 +476,7 @@ void alphaPass(struct stepStruct *step,
         }
 
     }// next t
-	printf("logProb %f\n", computeLogProb(step, T)/T);
-	
-
+	//printf("logProb %f\n", computeLogProb(step, T)/T);
 }// end alphaPass
 
 
