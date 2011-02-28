@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -59,10 +60,8 @@ public class ReadInstructions {
 			}
 			//writer.close();		
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -73,7 +72,6 @@ public class ReadInstructions {
 	 * lines. 
 	 */
 	public ArrayList<String> readAssemblyFile(String filename) throws IOException {
-		//String filename = "IDAN0.asm";
 		FileReader reader = new FileReader(filename);
 		BufferedReader input = new BufferedReader(reader);
 		String line = null;
@@ -111,7 +109,6 @@ public class ReadInstructions {
 		//asmData.get(30).replace("\t", " ");
 		for (String s: data) {
 			String[] tokens = s.replace("\t", " ").trim().split(" ");
-			//System.out.println(tokens[0]);
 			// Opcode is always located at the first position
 			processedData.add(tokens[0]);
 		}
@@ -136,7 +133,6 @@ public class ReadInstructions {
 			file.write("\n");
 			file.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
