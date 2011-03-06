@@ -1,10 +1,4 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Random;
-
 
 public class Main {
 
@@ -21,15 +15,17 @@ public class Main {
 		int size_of_input = 198; //Integer.parseInt(args[1]);
 		int cross_validation_folds = 5; //Integer.parseInt(args[2]);
 		int size_per_set = (int) Math.ceil((double)size_of_input/cross_validation_folds);
+				
 		//System.out.println(size_per_set);
 		//startCrossValidation();
 		startHMM(size_per_set, cross_validation_folds);
+	  
 	} // end of main	
 	
 	public static void startHMM(int size, int cross_validation_folds) {
 		CmdExec cmd = new CmdExec(size, cross_validation_folds);
 		cmd.trainAllFolders();
-		cmd.testAllFolders();
+		//cmd.testAllFolders();
 	}
 	
 	public static void startCrossValidation() {
