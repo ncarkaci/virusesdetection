@@ -15,14 +15,16 @@ public interface Constants {
 	// The location to the compare set used for testing (non-family virus and normal files)
 	public static final String TESTING_SETS = "C:/Users/Annie/Desktop/School Work/Reverse Engineering/Da Lin's Data/junk35_function30/CompareSet/";
 
+	// Max number of threads running for HMM
+	public static final int MAX_THREADS = 6;
 	// Max number of hidden states for this test
-	public static final int N_HIDDEN_STATES = 6;
+	public static final int N_HIDDEN_STATES = 3;
 	// The max percentage of subroutine and junk code for the metamorphic worm
 	public static final int PERCENT = 40;
 	// the random SEED
-	public final int SEED = 888;
+	public static final int SEED = 888;
 	// max iterations to be performed on the HMM
-	public final int MAX_ITERS = 800; 
+	public static final int MAX_ITERS = 800; 
 	// Number of normal files available (IDAR0 to IDAR 40)
 	public static final int NORMAL_FILE_SIZE = 41;
 	// Number of virus files (IDAN0 to IDAN199)
